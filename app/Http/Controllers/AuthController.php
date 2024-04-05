@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    private UserRepositoryInterface $userRepo;
+
+    public function __construct(UserRepositoryInterface $userRepo)
+    {
+        $this->userRepo = $userRepo;
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -33,10 +41,12 @@ class AuthController extends Controller
             'password_confirmation' => 'required|same:password',
         ]);
 
-        $user = User::create([
+        $userDetails = [
             'email' => $request->email,
             'password' => bcrypt($request->password),
-        ]);
+        ];
+
+        $user = $this->userRepo->create($userDetails);
 
         return response()->json([
             'user_id' => $user->id,
