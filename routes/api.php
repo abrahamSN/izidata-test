@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +12,8 @@ Route::prefix('/v1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
     });
 
-    Route::prefix('quote')->group(function () {
+    Route::prefix('/quote')->group(function () {
+        Route::get('/', [QuoteController::class, 'index']);
     })->middleware(['auth:sanctum']);
 
     Route::prefix('transaction')->group(function () {
